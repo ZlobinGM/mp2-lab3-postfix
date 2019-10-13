@@ -8,17 +8,15 @@ using namespace std;
 
 class TPostfix
 {
-  string infix;
-  string postfix;
+	string infix;
+	string postfix;
 public:
-  TPostfix()
-  {
-    infix = "a + b";
-  }
-  string GetInfix() { return infix; }
-  string GetPostfix() { return postfix; }
-  string ToPostfix();
-  double Calculate(); // Ввод переменных, вычисление по постфиксной форме
+	TPostfix(const string& str = "") : infix(str) { postfix = ""; }
+	void SetInfix(const string& str);
+	string GetInfix() { return infix; }
+	string GetPostfix() { return postfix; }
+	string ToPostfix();
+	double Calculate(); // Ввод переменных, вычисление по постфиксной форме
 };
 
 #endif

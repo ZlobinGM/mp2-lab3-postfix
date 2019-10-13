@@ -28,3 +28,13 @@
 *.out
 *.app
 /Студенты/
+.vs/mp2-lab3-postfix/v16/.suo
+.vs/mp2-lab3-postfix/v16/Browse.VC.db
+.vs/mp2-lab3-postfix/v16/ipch/AutoPCH/2236707cd6569550/TEST_TPOSTFIX.ipch
+.vs/mp2-lab3-postfix/v16/ipch/AutoPCH/5103f29167e5d3a4/SAMPLE_POSTFIX.ipch
+.vs/mp2-lab3-postfix/v16/ipch/AutoPCH/72b25f65d2d24401/TEST_TSTACK.ipch
+.vs/mp2-lab3-postfix/v16/ipch/AutoPCH/c0772a88ab757bc4/POSTFIX.ipch
+.vs/mp2-lab3-postfix/v16/ipch/AutoPCH/cf7e1ae16b7be2c5/POSTFIX.ipch
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
