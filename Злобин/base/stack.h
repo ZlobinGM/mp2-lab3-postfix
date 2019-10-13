@@ -10,7 +10,8 @@ class TStack
   int size;
   int top;
 public:
-  TStack(int _size = MaxStackSize) : top(-1), size(_size)  {
+  TStack(int _size) : top(-1) {
+	  size = _size;
     if ((size < 1) || (size > MaxStackSize))
       throw "too_large_or_negative_length";
     pMem = new T[size];
