@@ -47,6 +47,21 @@ TEST(TStack, throw_when_pop_from_empty_stack)
 	ASSERT_ANY_THROW(st.Pop());
 }
 
+TEST(TStack, can_get_top_of_stack)
+{
+	TStack<int> st(3);
+	st.Push(1);
+
+	EXPECT_EQ(1, st.Top());
+}
+
+TEST(TStack, throw_when_get_top_from_empty_stack)
+{
+	TStack<int> st(3);
+
+	ASSERT_ANY_THROW(st.Top());
+}
+
 TEST(TVector, can_get_empty)
 {
 	TStack<int> st(2);

@@ -29,6 +29,10 @@ public:
 	  if (IsEmpty()) throw "stack_is_empty";
 	  return pMem[top--];
   }
+  virtual T Top(void) {
+	  if (IsEmpty()) throw "stack_is_empty";
+	  return pMem[top];
+  }
 };
 
 #endif

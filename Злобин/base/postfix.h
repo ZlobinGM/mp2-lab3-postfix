@@ -11,6 +11,9 @@ class TPostfix
 	string infix;
 	string postfix;
 	int correct;
+
+	string ToNormalForm();
+	int Priority(const string& str);
 public:
 	TPostfix(const string& str = "") : infix(str), postfix(""), correct(-1) { }
 	void SetInfix(const string& str);
