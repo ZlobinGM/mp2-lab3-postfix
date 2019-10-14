@@ -14,14 +14,14 @@ string TPostfix::ToNormalForm()							// Нормализация вида (ст
 		}
 
 	infix.insert(0, " ");
-	for (int i = 1; i < infix.length(); i++) {
+	for (int i = 0; i < infix.length(); i++) {
 		if(infix[i] == ' '){							// Убрать лишние пробелы
 			int count = 1;
 			while (infix[i + count] == ' ') count++;
 			infix.replace(i, count, " ");
 		}
 		else if (infix[i] != ' ') {						// Перед каждой операцией, числом или переменной пробел
-			if (infix[i - 1] != ' ') infix.insert(i++, " ");
+			if (i != 0 && infix[i - 1] != ' ') infix.insert(i++, " ");
 			if (((infix[i] >= 'a' && infix[i] <= 'z') || numbers.find(infix[i]) != string::npos)
 				&& i < infix.length()) {
 				while (((infix[i] >= 'a' && infix[i] <= 'z') || numbers.find(infix[i]) != string::npos)
@@ -30,6 +30,8 @@ string TPostfix::ToNormalForm()							// Нормализация вида (ст
 			}
 		}
 	}
+	if(infix[0]==' ') infix.replace(0, 1, "");
+
 	unsigned int i = 0;
 	while ((i = infix.find("( +")) != string::npos) infix.insert(i + 1, " 0");
 	while ((i = infix.find("( -")) != string::npos) infix.insert(i + 1, " 0");
@@ -85,11 +87,12 @@ bool TPostfix::IsCorrect()								// Контроль 3-х критериев п
 		}
 
 	for (int i = 0; i < infix.length(); i++) {
-		if (operation.find(infix[i]) == string::npos) operation_after_operation_flag = 0;
-		else
+		if (operation.find(infix[i]) != string::npos) {
 			if (++operation_after_operation_flag == 2) {
 				correct = 0; return correct;			// Нет двух операций подряд
 			}
+		}	
+		else if (infix[i] != ' ') operation_after_operation_flag = 0;
 
 		if (infix[i] == '(') braket_flag++;
 		if (infix[i] == ')')							// У каждой скобки есть пара
