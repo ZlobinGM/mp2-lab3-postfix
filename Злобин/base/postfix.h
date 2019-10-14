@@ -3,6 +3,9 @@
 
 #include <string>
 #include "stack.h"
+#include <iostream>
+#include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -14,6 +17,7 @@ class TPostfix
 
 	string ToNormalForm();
 	int Priority(const string& str);
+	bool IsDigit(const string& str);
 public:
 	TPostfix(const string& str = "") : infix(str), postfix(""), correct(-1) { }
 	void SetInfix(const string& str);
