@@ -13,13 +13,13 @@ class TPostfix
 {
 	string infix;
 	string postfix;
-	int correct;
+	int correct, normal;
 
-	string ToNormalForm();
 	int Priority(const string& str);
 	bool IsDigit(const string& str);
+	string ToNormalForm();
 public:
-	TPostfix(const string& str = "") : infix(str), postfix(""), correct(-1) { }
+	TPostfix(const string& str = "") : infix(str), postfix(""), correct(-1), normal(0) { }
 	void SetInfix(const string& str);
 
 	bool IsCorrect();

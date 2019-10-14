@@ -1,30 +1,44 @@
 ﻿#include "postfix.h"
 #include "stack.h"
 
-string TPostfix::ToNormalForm()
+string TPostfix::ToNormalForm()							// Нормализация вида (ставить недостающие пробелы, убирать лишнии)
 {
-	string normal(infix);
+	if (normal) return infix;
 	string numbers = "1234567890.";
-	if (infix[0] == '-' || infix[0] == '+')normal.insert(0, "0");
-	for (int i = 1; i < normal.length; i++) {
-		if (normal[i] != ' ') {
-			if (normal[i - 1] == ' ') continue;
-			normal.insert(i++, " ");
-			while (((normal[i] >= 'a' && normal[i] <= 'z') || numbers.find(normal[i]) != string::npos) 
-				&& i < normal.length) i++;
-			i--;
+
+	for (int i = 0; i < infix.length(); i++)			// Можно в начале ставить 0
+		if (infix[i] != ' ') {
+			if (infix[i] == '-' || infix[i] == '+')
+				infix.insert(i, "0");
+			else break;
+		}
+
+	infix.insert(0, " ");
+	for (int i = 1; i < infix.length(); i++) {
+		if(infix[i] == ' '){							// Убрать лишние пробелы
+			int count = 1;
+			while (infix[i + count] == ' ') count++;
+			infix.replace(i, count, " ");
+		}
+		else if (infix[i] != ' ') {						// Перед каждой операцией, числом или переменной пробел
+			if (infix[i - 1] != ' ') infix.insert(i++, " ");
+			if (((infix[i] >= 'a' && infix[i] <= 'z') || numbers.find(infix[i]) != string::npos)
+				&& i < infix.length()) {
+				while (((infix[i] >= 'a' && infix[i] <= 'z') || numbers.find(infix[i]) != string::npos)
+					&& i < infix.length()) i++;
+				i--;
+			}
 		}
 	}
 	unsigned int i = 0;
-	while ((i = normal.find("  ")) != string::npos) normal.insert(i + 1, " ");
-	while ((i = normal.find("( +")) != string::npos) normal.insert(i + 1, " 0");
-	while ((i = normal.find("( -")) != string::npos) normal.insert(i + 1, " 0");
-	while ((i = normal.find("+ )")) != string::npos) normal.insert(i + 1, " 0");
-	while ((i = normal.find("- )")) != string::npos) normal.insert(i + 1, " 0");
-	return normal;
+	while ((i = infix.find("( +")) != string::npos) infix.insert(i + 1, " 0");
+	while ((i = infix.find("( -")) != string::npos) infix.insert(i + 1, " 0");
+
+	normal = 1;
+	return infix;
 }
 
-int TPostfix::Priority(const string& str)
+int TPostfix::Priority(const string& str)				// Получить приоритет операции
 {
 	switch (str[0])
 	{
@@ -40,7 +54,7 @@ int TPostfix::Priority(const string& str)
 	return -1;
 }
 
-bool TPostfix::IsDigit(const string & str)
+bool TPostfix::IsDigit(const string & str)				// Определит является ли подстрока числом
 {
 	try { stod(str); }
 	catch (invalid_argument) { return false; }
@@ -52,27 +66,33 @@ void TPostfix::SetInfix(const string& str)
 	if (str == infix)return;
 	infix = str;
 	postfix = "";
+
 	correct = -1;
+	normal = 0;
 }
 
-bool TPostfix::IsCorrect()
+bool TPostfix::IsCorrect()								// Контроль 3-х критериев правильности
 {
 	if (correct != -1)return correct;
-	if (infix[infix.length - 1] == '-' || infix[infix.length - 1] == '+') { correct = 0; return correct; }
-
 	short braket_flag = 0, operation_after_operation_flag = 0;
-
 	string operation = "+-*/";
 
-	for (int i = 0; i < infix.length; i++) {
+	if (operation.find(infix[infix.length() - 1]) != string::npos) { correct = 0; return correct; }
+	for (int i = 0; i < infix.length(); i++)			// Заканчивается не на операцию
+		if (infix[i] != ' ') {							// Начинается не на операцию (кроме +, -)
+			if (infix[i] == '*' || infix[i] == '/') { correct = 0; return correct; }
+			else break;
+		}
+
+	for (int i = 0; i < infix.length(); i++) {
 		if (operation.find(infix[i]) == string::npos) operation_after_operation_flag = 0;
 		else
 			if (++operation_after_operation_flag == 2) {
-				correct = 0; return correct;
+				correct = 0; return correct;			// Нет двух операций подряд
 			}
 
 		if (infix[i] == '(') braket_flag++;
-		if (infix[i] == ')')
+		if (infix[i] == ')')							// У каждой скобки есть пара
 			if (--braket_flag < 0) {
 				correct = 0; return correct;
 			}
@@ -87,7 +107,7 @@ string TPostfix::ToPostfix()
 {
 	if (!IsCorrect()) throw "not_correct";
 
-	stringstream s(ToNormalForm());
+	stringstream s(ToNormalForm());						// Переход к вектору
 	vector<string> v;
 	string tmp;
 	while (s >> tmp) v.push_back(tmp);
@@ -95,7 +115,7 @@ string TPostfix::ToPostfix()
 	string operations = "+-*/()";
 	TStack<string> st(20);
 
-	for (int i = 0; i < v.size; i++)
+	for (int i = 0; i < v.size(); i++)
 	{
 		if (operations.find(v[i]) == string::npos) postfix += v[i] + ' ';
 		else
@@ -103,12 +123,12 @@ string TPostfix::ToPostfix()
 			if (v[i] == "(") st.Push(v[i]);
 			else if (v[i] == ")") {
 				while (st.Top() != "(") postfix += st.Pop() + ' ';
-				st.Pop;
+				st.Pop();
 			}
 			else {
 				if (st.IsEmpty()) st.Push(v[i]);
 				else {
-					while (Priority(v[i]) <= Priority(st.Top())) postfix += st.Pop() + ' ';
+					while (!st.IsEmpty() && Priority(v[i]) <= Priority(st.Top())) postfix += st.Pop() + ' ';
 					st.Push(v[i]);
 				}
 			}
@@ -122,34 +142,37 @@ string TPostfix::ToPostfix()
 double TPostfix::Calculate()
 {
 	if (postfix == "") throw "not_postfix_form";
+
 	stringstream s(postfix);
 	vector<string> v;
 	string tmp;
 	while (s >> tmp) v.push_back(tmp);
 
 	string operations = "+-*/";
-	for (int i = 0; i < v.size; i++)
+	for (int i = 0; i < v.size(); i++)
 		if (operations.find(v[i]) == string::npos && !IsDigit(v[i])) {
 			string tmp(v[i]);
 			cout << "Введите значение переменной " << v[i] << " = ";
 			do { cin >> v[i]; } while (!IsDigit(v[i]));
-			for (int j = i; j < v.size; j++)
+			for (int j = i; j < v.size(); j++)
 				if (v[j] == tmp) v[j] = v[i];
 		}
 
 	double res = 0;
 	TStack<double> st(20);
-	for (int i = 0; i < v.size; i++) {
+	for (int i = 0; i < v.size(); i++) {
 		if (operations.find(v[i]) == string::npos)
 			st.Push(stod(v[i]));
 		else {
+			double tmp;
 			switch (v[i][0])
 			{
 			case '+': st.Push(st.Pop() + st.Pop()); break;
-			case '-': double tmp = st.Pop();
+			case '-': tmp = st.Pop();
 				st.Push(st.Pop() - tmp); break;
 			case '*': st.Push(st.Pop() * st.Pop()); break;
-			case '/': double tmp = st.Pop();
+			case '/': tmp = st.Pop();
+				if (tmp == 0)throw "divine_by_zero";
 				st.Push(st.Pop() / tmp); break;
 			default:
 				break;

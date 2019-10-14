@@ -23,7 +23,7 @@ public:
 
   void Push(const T& Val)  {
 	  if (IsFull()) throw "stack_is_full";
-	  pMem[++top] = val;
+	  pMem[++top] = Val;
   }
   virtual T Pop(void)  {
 	  if (IsEmpty()) throw "stack_is_empty";
