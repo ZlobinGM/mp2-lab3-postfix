@@ -8,8 +8,10 @@ string TPostfix::ToNormalForm()							// Нормализация вида (ст
 
 	for (int i = 0; i < infix.length(); i++)			// Можно в начале ставить 0
 		if (infix[i] != ' ') {
-			if (infix[i] == '-' || infix[i] == '+')
+			if (infix[i] == '-' || infix[i] == '+') {
 				infix.insert(i, "0");
+				break;
+			}
 			else break;
 		}
 
@@ -108,7 +110,7 @@ bool TPostfix::IsCorrect()								// Контроль 3-х критериев п
 
 string TPostfix::ToPostfix()
 {
-	if (!IsCorrect()) throw "not_correct";
+	if (!IsCorrect()) { throw "not_correct"; return postfix; }
 
 	stringstream s(ToNormalForm());						// Переход к вектору
 	vector<string> v;

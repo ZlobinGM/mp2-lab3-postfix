@@ -16,7 +16,13 @@ int main()
   cout << expression << endl;
   postfix.SetInfix(expression);
   cout << "Арифметическое выражение: " << postfix.GetInfix() << endl;
-  postfix.ToPostfix();
+  try { postfix.ToPostfix(); }
+  catch (const char* exception) {
+	  if (exception == "not_correct") {
+		  cout << "Некоректное выражение: " << postfix.GetInfix() << endl;
+		  return 0;
+	  }
+  }
   cout << "Нормализованная инфиксная форма: " << postfix.GetInfix() << endl;
   cout << "Постфиксная форма: " << postfix.GetPostfix() << endl;
   res = postfix.Calculate();
